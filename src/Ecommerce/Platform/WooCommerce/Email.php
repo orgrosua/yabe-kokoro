@@ -59,7 +59,7 @@ class Email
                 continue;
             }
             if (wc_get_product($licenseOrder->product_id)) {
-                $table_body .= '<br><b>Product:</b> ' . wc_get_product($licenseOrder->product_id)->get_name();
+                $table_body .= '<br><b>Product:</b> ' . \esc_html(wc_get_product($licenseOrder->product_id)->get_name());
             }
             if ($row->expired_at) {
                 $table_body .= '<br><b>Expire at:</b> ' . \date('M d, Y', (int) $row->expired_at);

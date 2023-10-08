@@ -3,8 +3,8 @@ Contributors: suabahasa, rosua
 Donate link: https://ko-fi.com/Q5Q75XSF7
 Tags: oxygen builder, design sets, template
 Requires at least: 6.0
-Tested up to: 6.2
-Stable tag: 1.0.1
+Tested up to: 6.3
+Stable tag: 1.0.2
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -34,7 +34,7 @@ Yabe Kokoro is packed full of features designed to streamline your workflow. Som
 It's easy to sell your design sets thanks to the seamless integration with the most popular e-commerce plugins:
 
 * [WooCommerce](https://woocommerce.com/)
-* [Easy Digital Downloads](https://easydigitaldownloads.com/) **[Pro]**
+* [Easy Digital Downloads](https://easydigitaldownloads.com/?ref=5375) **[Pro]**
 * [SureCart](https://surecart.com/?sc=298) **[Soon]** **[Pro]**
 
 Visit [our website](https://kokoro.yabe.land) for more information.
@@ -55,6 +55,9 @@ For instance:
 Free version **1**.0.5
 Pro version **2**.0.5
 
+
+= 1.0.2 =
+* **Improve**: Follow the WordPress guidelines
 
 = 1.0.1 =
 * **New**: Lite version released

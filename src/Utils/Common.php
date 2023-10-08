@@ -85,7 +85,7 @@ class Common
                 \wp_redirect($location, $status, $x_redirect_by);
             }
         } else {
-            echo '<meta http-equiv="refresh" content="0;url=' . $location . '">';
+            echo '<meta http-equiv="refresh" content="0;url=' . \esc_url($location) . '">';
         }
         exit;
     }

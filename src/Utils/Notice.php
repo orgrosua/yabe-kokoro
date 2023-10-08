@@ -61,7 +61,7 @@ class Notice
         $messages = static::get_lists();
         if ($messages && \is_array($messages)) {
             foreach ($messages as $message) {
-                echo \sprintf('<div class="notice notice-%s is-dismissible %s">%s</div>', $message['status'], KOKORO::WP_OPTION, $message['message']);
+                echo \sprintf('<div class="notice notice-%s is-dismissible %s">%s</div>', \esc_html($message['status']), KOKORO::WP_OPTION, \esc_html($message['message']));
             }
         }
     }

@@ -76,7 +76,7 @@ HTML;
             }
             $max_sites = $row->max_sites ?: \__('Unlimited', 'yabe-kokoro');
             $total_activation = $row->sites_count;
-            $table_body .= \sprintf($row_template, \get_post($licenseOrder->product_id)->post_title, $row->status ? 'Active' : 'Deactive', $total_activation . ' / ' . $max_sites, $row->expired_at ? \date('M d, Y', (int) $row->expired_at) : '', \base64_encode("{$site_url}\n{$site_name}\n!kokoro:{$row->license_key}"));
+            $table_body .= \sprintf($row_template, \esc_html(\get_post($licenseOrder->product_id)->post_title), $row->status ? 'Active' : 'Deactive', \esc_html($total_activation . ' / ' . $max_sites), $row->expired_at ? \date('M d, Y', (int) $row->expired_at) : '', \base64_encode("{$site_url}\n{$site_name}\n!kokoro:{$row->license_key}"));
         }
         $template = <<<HTML
     <h3>%s</h3>

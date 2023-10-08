@@ -2,9 +2,9 @@
   "entrypoints": {
     "admin": {
       "js": [
-        "/runtime.eee5b8a4.js",
+        "/runtime.10ba33fe.js",
         "/729.ad5fd640.js",
-        "/admin.e5d339d9.js"
+        "/admin.64873eed.js"
       ],
       "css": [
         "/admin.b6095b79.css"
