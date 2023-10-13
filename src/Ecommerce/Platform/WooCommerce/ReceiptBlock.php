@@ -39,38 +39,34 @@ class ReceiptBlock
             return;
         }
         $table_body = '';
-        $row_template = <<<HTML
-    <tbody>
-        <tr>
-            <td class="yabe-kokoro_cel_name">
-                <span class="yabe-kokoro_name">%s</span>
-            </td>
-            <td class="yabe-kokoro_cel_status">
-                <span class="yabe-kokoro_status">%s</span>
-            </td>
-            <td class="yabe-kokoro_cel_activation">
-                <span class="yabe-kokoro_activation">%s</span>
-            </td>
-            <td class="yabe-kokoro_cel_expire">
-                <span class="yabe-kokoro_expire">%s</span>
-            </td>
-            <td class="yabe-kokoro_cel_sitekey">
-                <span class="yabe-kokoro_sitekey"><code>%s</code></span>
-            </td>
-        </tr>
-    </tbody>
-HTML;
+        $row_template = '
+            <tbody>
+                <tr>
+                    <td class="yabe-kokoro_cel_name">
+                        <span class="yabe-kokoro_name">%s</span>
+                    </td>
+                    <td class="yabe-kokoro_cel_status">
+                        <span class="yabe-kokoro_status">%s</span>
+                    </td>
+                    <td class="yabe-kokoro_cel_activation">
+                        <span class="yabe-kokoro_activation">%s</span>
+                    </td>
+                    <td class="yabe-kokoro_cel_expire">
+                        <span class="yabe-kokoro_expire">%s</span>
+                    </td>
+                    <td class="yabe-kokoro_cel_sitekey">
+                        <span class="yabe-kokoro_sitekey"><code>%s</code></span>
+                    </td>
+                </tr>
+            </tbody>
+        ';
         /** @var wpdb $wpdb */
         global $wpdb;
-        $sql = "\n            SELECT *\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_orders o\n            WHERE \n                o.vendor = 'woocommerce'\n                AND o.order_id = %d\n        ";
-        $sql = $wpdb->prepare($sql, (int) $wcAbstractOrder->get_id());
-        $licenseOrders = $wpdb->get_results($sql);
+        $licenseOrders = $wpdb->get_results($wpdb->prepare("\n                SELECT *\n                FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_orders o\n                WHERE \n                    o.vendor = 'woocommerce'\n                    AND o.order_id = %d\n            ", (int) $wcAbstractOrder->get_id()));
         $site_url = \get_site_url();
         $site_name = \get_bloginfo('name');
         foreach ($licenseOrders as $licenseOrder) {
-            $sql = "\n                SELECT \n                    l.*,\n                    COUNT(s.id) AS sites_count\n                FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l\n                LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s ON s.license_id = l.id\n                WHERE l.id = %d\n                GROUP BY l.id\n            ";
-            $sql = $wpdb->prepare($sql, $licenseOrder->license_id);
-            $row = $wpdb->get_row($sql);
+            $row = $wpdb->get_row($wpdb->prepare("\n                    SELECT \n                        l.*,\n                        COUNT(s.id) AS sites_count\n                    FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l\n                    LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s ON s.license_id = l.id\n                    WHERE l.id = %d\n                    GROUP BY l.id\n                ", $licenseOrder->license_id));
             if (!$row) {
                 continue;
             }
@@ -78,45 +74,57 @@ HTML;
             $total_activation = $row->sites_count;
             $table_body .= \sprintf($row_template, \esc_html(\get_post($licenseOrder->product_id)->post_title), $row->status ? 'Active' : 'Deactive', \esc_html($total_activation . ' / ' . $max_sites), $row->expired_at ? \date('M d, Y', (int) $row->expired_at) : '', \base64_encode("{$site_url}\n{$site_name}\n!kokoro:{$row->license_key}"));
         }
-        $template = <<<HTML
-    <h3>%s</h3>
-    <table id="yabe-kokoro_receipt" class="yabe-kokoro_receipt">
-        <thead>
-            <tr>
-                <th class="yabe-kokoro_header_name">%s</th>
-                <th>%s</th>
-                <th>%s</th>
-                <th>%s</th>
-                <th>%s</th>
-            </tr>
-        </thead>
-        {$table_body}
-    </table>
-HTML;
-        $output = \sprintf($template, \__('Yabe Kokoro License', 'yabe-kokoro'), \__('Product', 'yabe-kokoro'), \__('Status', 'yabe-kokoro'), \__('Activation', 'yabe-kokoro'), \__('Expired at', 'yabe-kokoro'), \__('SiteKey', 'yabe-kokoro'));
-        $output .= <<<'HTML'
-    <style>
-        .yabe-kokoro_receipt {
-            width: 100%;
-            table-layout: auto;
-        }
+        ?>
+            <h3><?php 
+        \__('Yabe Kokoro License', 'yabe-kokoro');
+        ?></h3>
+            <table id="yabe-kokoro_receipt" class="yabe-kokoro_receipt">
+                <thead>
+                    <tr>
+                        <th class="yabe-kokoro_header_name"><?php 
+        \__('Product', 'yabe-kokoro');
+        ?></th>
+                        <th><?php 
+        \__('Status', 'yabe-kokoro');
+        ?></th>
+                        <th><?php 
+        \__('Activation', 'yabe-kokoro');
+        ?></th>
+                        <th><?php 
+        \__('Expired at', 'yabe-kokoro');
+        ?></th>
+                        <th><?php 
+        \__('SiteKey', 'yabe-kokoro');
+        ?></th>
+                    </tr>
+                </thead>
+                <?php 
+        $table_body;
+        ?>
+            </table>
+        
 
-        .yabe-kokoro_receipt .yabe-kokoro_header_name {
-            text-align: left;
-        }
+            <style>
+                .yabe-kokoro_receipt {
+                    width: 100%;
+                    table-layout: auto;
+                }
 
-        .yabe-kokoro_receipt .yabe-kokoro_cel_status,
-        .yabe-kokoro_receipt .yabe-kokoro_cel_activation,
-        .yabe-kokoro_receipt .yabe-kokoro_cel_expire {
-            text-align: center;
-        }
+                .yabe-kokoro_receipt .yabe-kokoro_header_name {
+                    text-align: left;
+                }
 
-        .yabe-kokoro_receipt .yabe-kokoro_cel_sitekey {
-            overflow-wrap: anywhere;
-        }
-    </style>
-HTML;
-        echo $output;
+                .yabe-kokoro_receipt .yabe-kokoro_cel_status,
+                .yabe-kokoro_receipt .yabe-kokoro_cel_activation,
+                .yabe-kokoro_receipt .yabe-kokoro_cel_expire {
+                    text-align: center;
+                }
+
+                .yabe-kokoro_receipt .yabe-kokoro_cel_sitekey {
+                    overflow-wrap: anywhere;
+                }
+            </style>
+        <?php 
     }
     private function is_order_complete(int $post_id) : bool
     {

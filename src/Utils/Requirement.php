@@ -84,14 +84,14 @@ class Requirement
             if (\is_int($k)) {
                 if (!\is_plugin_active($v)) {
                     $pluginName = \get_plugin_data(\WP_PLUGIN_DIR . '/' . $v)['Name'];
-                    $this->doesNotMeet[] = \sprintf('<strong>%s</strong>', $pluginName);
+                    $this->doesNotMeet[] = \sprintf('<strong>%s</strong>', \esc_html($pluginName));
                 }
             } else {
                 $pluginName = \get_plugin_data(\WP_PLUGIN_DIR . '/' . $k)['Name'];
                 if (!\is_plugin_active($k)) {
-                    $this->doesNotMeet[] = \sprintf('<strong>%s</strong>', $pluginName);
+                    $this->doesNotMeet[] = \sprintf('<strong>%s</strong>', \esc_html($pluginName));
                 } elseif (\version_compare(\get_plugin_data(\WP_PLUGIN_DIR . '/' . $k)['Version'], $v, '<')) {
-                    $this->doesNotMeet[] = \sprintf('<strong>%s</strong> <code>%s</code> or higher', $pluginName, $v);
+                    $this->doesNotMeet[] = \sprintf('<strong>%s</strong> <code>%s</code> or higher', \esc_html($pluginName), $v);
                 }
             }
         }
@@ -125,6 +125,6 @@ class Requirement
             '<strong>' . $name . '</strong>'
         );
         $requirements = '<ul><li>' . \implode('</li><li>', $this->doesNotMeet) . '</li></ul>';
-        \printf('<div class="notice notice-error"><p>%1$s</p>%2$s</div>', $notice, $requirements);
+        \printf('<div class="notice notice-error"><p>%1$s</p>%2$s</div>', \esc_html__($notice), $requirements);
     }
 }

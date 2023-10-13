@@ -56,9 +56,7 @@ class Runtime
         $auth = isset($headers['auth']) && (\is_countable($headers['auth']) ? \count($headers['auth']) : 0) > 0 ? \sanitize_text_field(\array_shift($headers['auth'])) : \false;
         // check with Kokoro's middleware
         if ($auth) {
-            $sql = "\n                SELECT *\n                FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l\n                WHERE MD5(CONCAT('!kokoro:', l.license_key)) = %s\n            ";
-            $sql = $wpdb->prepare($sql, $auth);
-            $license = $wpdb->get_row($sql);
+            $license = $wpdb->get_row($wpdb->prepare("\n                    SELECT *\n                    FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l\n                    WHERE MD5(CONCAT('!kokoro:', l.license_key)) = %s\n                ", $auth));
             if ($license) {
                 // check if license is disabled
                 if (!(bool) $license->status) {
@@ -80,9 +78,7 @@ class Runtime
                 if (!$host) {
                     return new WP_Error('rest_forbidden', \__("Sorry, it's seems your request not coming from WordPress.", 'yabe-kokoro'), ['status' => 400]);
                 }
-                $sql = "\n                    SELECT\n                        s.*\n                    FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s\n                    LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l ON l.id = s.license_id\n                    WHERE \n                        l.id = %d\n                        AND\n                        s.site_url = %s\n                    GROUP BY s.id\n                ";
-                $sql = $wpdb->prepare($sql, [(int) $license->id, $host]);
-                $site = $wpdb->get_row($sql);
+                $site = $wpdb->get_row($wpdb->prepare("\n                        SELECT\n                            s.*\n                        FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s\n                        LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l ON l.id = s.license_id\n                        WHERE \n                            l.id = %d\n                            AND\n                            s.site_url = %s\n                        GROUP BY s.id\n                    ", (int) $license->id, $host));
                 // if registered
                 if ($site) {
                     // check if status is enabled
@@ -92,9 +88,7 @@ class Runtime
                     return \true;
                 }
                 // if not registered
-                $sql = "\n                    SELECT COUNT(*) AS total_site\n                    FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s\n                    LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l ON l.id = s.license_id\n                    WHERE \n                        l.id = %d\n                        AND\n                        s.status = 1\n                    GROUP BY l.id\n                ";
-                $sql = $wpdb->prepare($sql, (int) $license->id);
-                $total_site = $wpdb->get_var($sql);
+                $total_site = $wpdb->get_var($wpdb->prepare("\n                        SELECT COUNT(*) AS total_site\n                        FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s\n                        LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l ON l.id = s.license_id\n                        WHERE \n                            l.id = %d\n                            AND\n                            s.status = 1\n                        GROUP BY l.id\n                    ", (int) $license->id));
                 // check if max site limit is reached, if not, register the site
                 if ($license->max_sites && (int) $total_site >= (int) $license->max_sites) {
                     return new WP_Error('rest_forbidden', \__('Sorry, you have reached the maximum site limit.', 'yabe-kokoro'), ['status' => 403]);
@@ -138,8 +132,7 @@ class Runtime
         if ($ct_source_sites === null) {
             $ct_source_sites = [];
         }
-        $sql = "\n            SELECT\n                r.uid,\n                r.title,\n                r.remote_url,\n                r.license_key\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_remotes r\n            WHERE r.status = 1\n        ";
-        $result = $wpdb->get_results($sql);
+        $result = $wpdb->get_results("\n            SELECT\n                r.uid,\n                r.title,\n                r.remote_url,\n                r.license_key\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_remotes r\n            WHERE r.status = 1\n        ");
         $items = [];
         foreach ($result as $row) {
             $items[$row->uid] = ['label' => $row->title, 'url' => $row->remote_url, 'accesskey' => $row->license_key];

@@ -163,7 +163,7 @@ final class Plugin
     {
         \do_action('a!yabe/kokoro/plugin:init_plugin.start');
         // Load translations.
-        \load_plugin_textdomain(KOKORO::TEXT_DOMAIN, \false, \dirname(\plugin_basename(KOKORO::FILE)) . '/languages/');
+        \load_plugin_textdomain(KOKORO::TEXT_DOMAIN);
         // Instantiate the AdminPage class.
         new Runtime();
         new AdminPage();
@@ -194,7 +194,7 @@ final class Plugin
     private function plugin_action_links(array $links) : array
     {
         $base_url = AdminPage::get_page_url();
-        \array_unshift($links, \sprintf('<a href="%s">%s</a>', \esc_url(\sprintf('%s#/settings', $base_url)), \esc_html__('Settings', KOKORO::TEXT_DOMAIN)));
+        \array_unshift($links, \sprintf('<a href="%s">%s</a>', \esc_url(\sprintf('%s#/settings', $base_url)), \esc_html__('Settings', 'yabe-kokoro')));
         \array_unshift($links, \sprintf('<a href="%s">%s</a>', \esc_url(\sprintf('%s#/remotes/index', $base_url)), \esc_html__('Remote', 'yabe-kokoro')));
         if (!\class_exists(PluginUpdater::class)) {
             \array_unshift($links, \sprintf('<a href="%s" style="color:#067b34;font-weight:600;" target="_blank">%s</a>', \esc_url(Common::plugin_data('PluginURI') . '?utm_source=WordPress&utm_campaign=liteplugin&utm_medium=plugin-action-links&utm_content=Upgrade#pricing'), \esc_html__('Upgrade to Pro', 'yabe-kokoro')));

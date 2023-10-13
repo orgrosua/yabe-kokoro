@@ -29,7 +29,7 @@ class Metabox
     }
     public function save_post(int $postId) : void
     {
-        if (!\array_key_exists('post_type', $_POST) || $_POST['post_type'] !== 'product' || !\array_key_exists('kokoro_wpnonce', $_POST) || !\wp_verify_nonce($_POST['kokoro_wpnonce'], KOKORO::WP_OPTION)) {
+        if (!\array_key_exists('post_type', $_POST) || $_POST['post_type'] !== 'product' || !\array_key_exists('kokoro_wpnonce', $_POST) || !\wp_verify_nonce(\sanitize_text_field(\wp_unslash($_POST['kokoro_wpnonce'])), KOKORO::WP_OPTION)) {
             return;
         }
         \update_post_meta($postId, 'kokoro_should_generate', (int) \array_key_exists('kokoro_should_generate', $_POST));
@@ -44,60 +44,76 @@ class Metabox
         $should_renewal = \get_post_meta($wpPost->ID, 'kokoro_should_renewal', \true) ? 'checked' : '';
         $max_sites = (int) \get_post_meta($wpPost->ID, 'kokoro_max_sites', \true);
         $active_duration = (int) \get_post_meta($wpPost->ID, 'kokoro_active_duration', \true);
-        $template = <<<HTML
-    <div class="kokoro-container">
-        {$nonce_field}
-        <div>
-            <p><strong>Generate?</strong></p>
-            <label for="kokoro_should_generate">
-                <input type="checkbox" name="kokoro_should_generate" id="kokoro_should_generate" {$should_generate} >
-                Generate the license automatically
-            </label>
-        </div>
+        ?>
+        
+            <div class="kokoro-container">
+                <?php 
+        $nonce_field;
+        ?>
+                <div>
+                    <p><strong>Generate?</strong></p>
+                    <label for="kokoro_should_generate">
+                        <input type="checkbox" name="kokoro_should_generate" id="kokoro_should_generate" <?php 
+        $should_generate;
+        ?>>
+                        Generate the license automatically
+                    </label>
+                </div>
 
-        <div>
-            <p><strong>Renewal?</strong></p>
-            <label for="kokoro_should_renewal">
-                <input type="checkbox" name="kokoro_should_renewal" id="kokoro_should_renewal" {$should_renewal}>
-                Allow license renewal
-                <span class="dashicons dashicons-editor-help" title="Extend the expiry date for the existing license for the renewal order."></span>
-            </label>
-        </div>
+                <div>
+                    <p><strong>Renewal?</strong></p>
+                    <label for="kokoro_should_renewal">
+                        <input type="checkbox" name="kokoro_should_renewal" id="kokoro_should_renewal" <?php 
+        $should_renewal;
+        ?>>
+                        Allow license renewal
+                        <span class="dashicons dashicons-editor-help" title="Extend the expiry date for the existing license for the renewal order."></span>
+                    </label>
+                </div>
 
-        <div>
-            <p>
-                <strong>Max Activations</strong>
-                <span class="dashicons dashicons-editor-help" title="Keep empty or 0 to allow unlimited activations."></span>
-            </p>
-            <input type="number" name="kokoro_max_sites" id="kokoro_max_sites" value="{$max_sites}" min="0" style="max-width: 100%;">
-        </div>
+                <div>
+                    <p>
+                        <strong>Max Activations</strong>
+                        <span class="dashicons dashicons-editor-help" title="Keep empty or 0 to allow unlimited activations."></span>
+                    </p>
+                    <input type="number" name="kokoro_max_sites" id="kokoro_max_sites" value="<?php 
+        $max_sites;
+        ?>" min="0">
+                </div>
 
-        <div>
-            <p>
-                <strong>Duration</strong>
-                <span class="dashicons dashicons-editor-help" title="The duration of the license is in days. Keep empty or 0 to have no expiration date."></span>
-            </p>
-            <div>
-                <input type="number" name="kokoro_active_duration" id="kokoro_active_duration" value="{$active_duration}" min="0" style="max-width: 100%;">
-                 days
+                <div>
+                    <p>
+                        <strong>Duration</strong>
+                        <span class="dashicons dashicons-editor-help" title="The duration of the license is in days. Keep empty or 0 to have no expiration date."></span>
+                    </p>
+                    <div>
+                        <input type="number" name="kokoro_active_duration" id="kokoro_active_duration" value="<?php 
+        $active_duration;
+        ?>" min="0">
+                         days
+                    </div>
+                    </label>
+                </div>
             </div>
-            </label>
-        </div>
-    </div>
 
-    <style>
-        .kokoro-container {
-            display: grid;
-            grid-template-columns: repeat(1, 1fr);
-            gap: 10px;
-        }
+            <style>
+                .kokoro-container {
+                    display: grid;
+                    grid-template-columns: repeat(1, 1fr);
+                    gap: 10px;
+                }
 
-        /* revert Oxygen style */
-        #editor .postbox > .postbox-header:hover {
-            background: transparent !important;
-        }
-    </style>
-HTML;
-        echo $template;
+                #kokoro_max_sites,
+                #kokoro_active_duration {
+                    max-width: 100%;
+                }
+
+                /* revert Oxygen style */
+                #editor .postbox > .postbox-header:hover {
+                    background: transparent !important;
+                }
+            </style>
+        
+        <?php 
     }
 }
