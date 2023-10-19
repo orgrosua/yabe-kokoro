@@ -11,11 +11,11 @@
 declare (strict_types=1);
 namespace Yabe\Kokoro\Api;
 
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 class AbstractApi
 {
     /**
      * @var string
      */
-    public const API_NAMESPACE = KOKORO::REST_NAMESPACE;
+    public const API_NAMESPACE = YABE_KOKORO::REST_NAMESPACE;
 }

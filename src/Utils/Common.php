@@ -12,7 +12,7 @@ declare (strict_types=1);
 namespace Yabe\Kokoro\Utils;
 
 use Exception;
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 /**
  * Common utility functions for the plugin.
  *
@@ -59,10 +59,10 @@ class Common
         if (!\function_exists('get_plugin_data')) {
             require_once \ABSPATH . 'wp-admin/includes/plugin.php';
         }
-        $plugin_data = \wp_cache_get('plugin_data', KOKORO::WP_OPTION);
+        $plugin_data = \wp_cache_get('plugin_data', YABE_KOKORO::WP_OPTION);
         if (!$plugin_data) {
-            $plugin_data = \get_plugin_data(KOKORO::FILE);
-            \wp_cache_set('plugin_data', $plugin_data, KOKORO::WP_OPTION);
+            $plugin_data = \get_plugin_data(YABE_KOKORO::FILE);
+            \wp_cache_set('plugin_data', $plugin_data, YABE_KOKORO::WP_OPTION);
         }
         return $key ? $plugin_data[$key] : $plugin_data;
     }
@@ -92,6 +92,7 @@ class Common
     /**
      * Save the worker result into the file.
      *
+     * @internal
      * @param mixed $content The content of the file.
      * @param string $file_path The file path.
      * @param int $flags The flags to pass to the file_put_contents() function.

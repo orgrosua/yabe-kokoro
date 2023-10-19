@@ -28,7 +28,7 @@ if (!function_exists('humbug_phpscoper_expose_class')) {
         }
     }
 }
-humbug_phpscoper_expose_class('KOKORO', '_YabeKokoro\KOKORO');
+humbug_phpscoper_expose_class('YABE_KOKORO', '_YabeKokoro\YABE_KOKORO');
 humbug_phpscoper_expose_class('Normalizer', '_YabeKokoro\Normalizer');
 humbug_phpscoper_expose_class('Attribute', '_YabeKokoro\Attribute');
 humbug_phpscoper_expose_class('PhpToken', '_YabeKokoro\PhpToken');

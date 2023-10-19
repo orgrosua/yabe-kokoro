@@ -12,7 +12,7 @@ declare (strict_types=1);
 namespace Yabe\Kokoro\Utils;
 
 use Exception;
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 use _YabeKokoro\Symfony\Component\PropertyAccess\Exception\AccessException;
 use _YabeKokoro\Symfony\Component\PropertyAccess\Exception\InvalidArgumentException;
 use _YabeKokoro\Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
@@ -45,7 +45,7 @@ class Config
      */
     public static function get($path, $defaultValue = null)
     {
-        $options = \json_decode(\get_option(KOKORO::WP_OPTION . '_options', '{}'), null, 512, \JSON_THROW_ON_ERROR);
+        $options = \json_decode(\get_option(YABE_KOKORO::WP_OPTION . '_options', '{}'), null, 512, \JSON_THROW_ON_ERROR);
         $options = \apply_filters('f!yabe/kokoro/api/setting/option:index_options', $options);
         try {
             return self::propertyAccessor()->getValue($options, $path);
@@ -65,9 +65,9 @@ class Config
      */
     public static function set($path, $value)
     {
-        $options = \json_decode(\get_option(KOKORO::WP_OPTION . '_options', '{}'), null, 512, \JSON_THROW_ON_ERROR);
+        $options = \json_decode(\get_option(YABE_KOKORO::WP_OPTION . '_options', '{}'), null, 512, \JSON_THROW_ON_ERROR);
         $options = \apply_filters('f!yabe/kokoro/api/setting/option:index_options', $options);
         self::propertyAccessor()->setValue($options, $path, $value);
-        \update_option(KOKORO::WP_OPTION . '_options', \json_encode($options, \JSON_THROW_ON_ERROR));
+        \update_option(YABE_KOKORO::WP_OPTION . '_options', \json_encode($options, \JSON_THROW_ON_ERROR));
     }
 }

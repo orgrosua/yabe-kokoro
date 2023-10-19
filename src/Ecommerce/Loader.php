@@ -12,7 +12,7 @@ declare (strict_types=1);
 namespace Yabe\Kokoro\Ecommerce;
 
 use Exception;
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 use ReflectionClass;
 use _YabeKokoro\Symfony\Component\Finder\Finder;
 class Loader
@@ -66,7 +66,7 @@ class Loader
     public function scan_platforms()
     {
         // Get cached Platforms
-        $transient_name = 'kokoro_scanned_platforms_' . KOKORO::VERSION;
+        $transient_name = 'kokoro_scanned_platforms_' . YABE_KOKORO::VERSION;
         /** @var PlatformInterface[]|false $cached */
         $cached = \get_transient($transient_name);
         if (!\WP_DEBUG && $cached !== \false) {

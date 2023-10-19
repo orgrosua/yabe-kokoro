@@ -11,7 +11,7 @@
 declare (strict_types=1);
 namespace Yabe\Kokoro\Utils;
 
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 /**
  * WordPress admin notice manager.
  *
@@ -61,7 +61,7 @@ class Notice
         $messages = static::get_lists();
         if ($messages && \is_array($messages)) {
             foreach ($messages as $message) {
-                echo \sprintf('<div class="notice notice-%s is-dismissible %s">%s</div>', \esc_html($message['status']), \esc_html(KOKORO::WP_OPTION), \esc_html($message['message']));
+                echo \sprintf('<div class="notice notice-%s is-dismissible %s">%s</div>', \esc_html($message['status']), \esc_html(YABE_KOKORO::WP_OPTION), \esc_html($message['message']));
             }
         }
     }
@@ -73,9 +73,9 @@ class Notice
      */
     public static function get_lists(?bool $purge = \true) : array
     {
-        $notices = \get_option(KOKORO::WP_OPTION, []);
+        $notices = \get_option(YABE_KOKORO::WP_OPTION, []);
         if ($purge) {
-            \update_option(KOKORO::WP_OPTION, []);
+            \update_option(YABE_KOKORO::WP_OPTION, []);
         }
         return $notices;
     }
@@ -92,7 +92,7 @@ class Notice
         if (!\in_array($status, [self::ERROR, self::SUCCESS, self::WARNING, self::INFO], \true)) {
             return;
         }
-        $notices = \get_option(KOKORO::WP_OPTION, []);
+        $notices = \get_option(YABE_KOKORO::WP_OPTION, []);
         $payload = ['status' => $status, 'message' => $message];
         if ($unique && $key === null && \in_array(['status' => $status, 'message' => $message], $notices, \true)) {
             return;
@@ -102,6 +102,6 @@ class Notice
         } else {
             $notices[] = $payload;
         }
-        \update_option(KOKORO::WP_OPTION, $notices);
+        \update_option(YABE_KOKORO::WP_OPTION, $notices);
     }
 }

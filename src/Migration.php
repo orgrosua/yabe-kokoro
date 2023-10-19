@@ -11,7 +11,7 @@
 declare (strict_types=1);
 namespace Yabe\Kokoro;
 
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 use _YabeKokoro\Rosua\Migrations\Migrator;
 /**
  * Manage the plugin custom database tables.
@@ -23,7 +23,7 @@ final class Migration
     private Migrator $migrator;
     public function __construct()
     {
-        $this->migrator = new Migrator(['tableName' => 'kokoro_migrations', 'namespace' => 'Yabe\\Kokoro\\Migrations', 'directory' => 'migrations', 'basePath' => \dirname(KOKORO::FILE), 'commandNamespace' => 'kokoro migrations']);
+        $this->migrator = new Migrator(['tableName' => 'kokoro_migrations', 'namespace' => 'Yabe\\Kokoro\\Migrations', 'directory' => 'migrations', 'basePath' => \dirname(YABE_KOKORO::FILE), 'commandNamespace' => 'kokoro migrations']);
         \add_action('a!yabe/kokoro/plugin:activate_plugin.start', fn() => $this->install());
         \add_action('a!yabe/kokoro/plugin:upgrade_plugin.start', fn() => $this->upgrade());
         $this->migrator->boot();

@@ -11,7 +11,7 @@
 declare (strict_types=1);
 namespace Yabe\Kokoro\Api\Admin;
 
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
@@ -39,7 +39,7 @@ class Setting extends AbstractApi implements ApiInterface
     }
     public function index(WP_REST_Request $wprestRequest) : WP_REST_Response
     {
-        $options = \json_decode(\get_option(KOKORO::WP_OPTION . '_options', '{}'), null, 512, \JSON_THROW_ON_ERROR);
+        $options = \json_decode(\get_option(YABE_KOKORO::WP_OPTION . '_options', '{}'), null, 512, \JSON_THROW_ON_ERROR);
         $options = \apply_filters('f!yabe/kokoro/api/admin/setting:index', $options);
         return new WP_REST_Response(['options' => $options]);
     }
@@ -51,7 +51,7 @@ class Setting extends AbstractApi implements ApiInterface
             $options = (object) $options;
         }
         $options = \apply_filters('f!yabe/kokoro/api/admin/setting:store.before', $options);
-        \update_option(KOKORO::WP_OPTION . '_options', \json_encode($options, \JSON_THROW_ON_ERROR));
+        \update_option(YABE_KOKORO::WP_OPTION . '_options', \json_encode($options, \JSON_THROW_ON_ERROR));
         \do_action('f!yabe/kokoro/api/admin/setting:store.after', $options);
         return $this->index($wprestRequest);
     }
@@ -63,7 +63,7 @@ class Setting extends AbstractApi implements ApiInterface
     {
         $payload = $wprestRequest->get_json_params();
         $new_license_key = \sanitize_text_field($payload['license']);
-        $old_license = \get_option(KOKORO::WP_OPTION . '_license', ['key' => '', 'opt_in_pre_release' => \false]);
+        $old_license = \get_option(YABE_KOKORO::WP_OPTION . '_license', ['key' => '', 'opt_in_pre_release' => \false]);
         $plugin_updater = Plugin::get_instance()->plugin_updater;
         $notice = [];
         if ($new_license_key !== $old_license['key']) {
@@ -84,12 +84,12 @@ class Setting extends AbstractApi implements ApiInterface
                 }
             }
         }
-        \update_option(KOKORO::WP_OPTION . '_license', ['key' => $new_license_key, 'opt_in_pre_release' => \false]);
+        \update_option(YABE_KOKORO::WP_OPTION . '_license', ['key' => $new_license_key, 'opt_in_pre_release' => \false]);
         return new WP_REST_Response(['license' => $this->get_license(), 'notice' => $notice]);
     }
     private function get_license() : array
     {
-        $license = \get_option(KOKORO::WP_OPTION . '_license', ['key' => '', 'opt_in_pre_release' => \false]);
+        $license = \get_option(YABE_KOKORO::WP_OPTION . '_license', ['key' => '', 'opt_in_pre_release' => \false]);
         try {
             $license['is_activated'] = Plugin::get_instance()->plugin_updater->is_activated();
         } catch (\Throwable $throwable) {

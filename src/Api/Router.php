@@ -11,7 +11,7 @@
 declare (strict_types=1);
 namespace Yabe\Kokoro\Api;
 
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 use ReflectionClass;
 use _YabeKokoro\Symfony\Component\Finder\Finder;
 class Router
@@ -32,7 +32,7 @@ class Router
     public function scan_apis()
     {
         // Get cached APIs
-        $transient_name = 'kokoro_scanned_apis_' . KOKORO::VERSION;
+        $transient_name = 'kokoro_scanned_apis_' . YABE_KOKORO::VERSION;
         /** @var ApiInterface[]|false $cached */
         $cached = \get_transient($transient_name);
         if (!\WP_DEBUG && $cached !== \false) {

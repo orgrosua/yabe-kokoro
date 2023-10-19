@@ -13,7 +13,7 @@ namespace Yabe\Kokoro;
 
 use _YabeKokoro\EDD_SL\PluginUpdater;
 use Exception;
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 use WP_Upgrader;
 use wpdb;
 use Yabe\Kokoro\Admin\AdminPage;
@@ -96,13 +96,13 @@ final class Plugin
         \do_action('a!yabe/kokoro/plugin:boot.start');
         $this->boot_migration();
         // (de)activation hooks.
-        \register_activation_hook(KOKORO::FILE, fn() => $this->activate_plugin());
-        \register_deactivation_hook(KOKORO::FILE, fn() => $this->deactivate_plugin());
+        \register_activation_hook(YABE_KOKORO::FILE, fn() => $this->activate_plugin());
+        \register_deactivation_hook(YABE_KOKORO::FILE, fn() => $this->deactivate_plugin());
         // upgrade hooks.
         \add_action('upgrader_process_complete', function (WP_Upgrader $wpUpgrader, array $options) : void {
             if ($options['action'] === 'update' && $options['type'] === 'plugin') {
                 foreach ($options['plugins'] as $plugin) {
-                    if ($plugin === \plugin_basename(KOKORO::FILE)) {
+                    if ($plugin === \plugin_basename(YABE_KOKORO::FILE)) {
                         $this->upgrade_plugin();
                     }
                 }
@@ -125,7 +125,7 @@ final class Plugin
         \do_action('a!yabe/kokoro/plugin:boot_migration.start');
         /** @var wpdb $wpdb */
         global $wpdb;
-        $wpdb->yabe_kokoro_prefix = KOKORO::DB_TABLE_PREFIX;
+        $wpdb->yabe_kokoro_prefix = YABE_KOKORO::DB_TABLE_PREFIX;
         new \Yabe\Kokoro\Migration();
         \do_action('a!yabe/kokoro/plugin:boot_migration.end');
     }
@@ -136,7 +136,7 @@ final class Plugin
     private function activate_plugin() : void
     {
         \do_action('a!yabe/kokoro/plugin:activate_plugin.start');
-        \update_option(KOKORO::WP_OPTION . '_version', KOKORO::VERSION);
+        \update_option(YABE_KOKORO::WP_OPTION . '_version', YABE_KOKORO::VERSION);
         $this->maybe_embedded_license();
         \do_action('a!yabe/kokoro/plugin:activate_plugin.end');
     }
@@ -163,7 +163,7 @@ final class Plugin
     {
         \do_action('a!yabe/kokoro/plugin:init_plugin.start');
         // Load translations.
-        \load_plugin_textdomain(KOKORO::TEXT_DOMAIN);
+        \load_plugin_textdomain(YABE_KOKORO::TEXT_DOMAIN);
         // Instantiate the AdminPage class.
         new Runtime();
         new AdminPage();
@@ -179,7 +179,7 @@ final class Plugin
         new ApiRouter();
         if (\is_admin()) {
             \add_action('admin_notices', static fn() => Notice::admin_notices());
-            \add_filter('plugin_action_links_' . \plugin_basename(KOKORO::FILE), fn($links) => $this->plugin_action_links($links));
+            \add_filter('plugin_action_links_' . \plugin_basename(YABE_KOKORO::FILE), fn($links) => $this->plugin_action_links($links));
         }
         \do_action('a!yabe/kokoro/plugin:plugins_loaded.end');
     }
@@ -215,8 +215,8 @@ final class Plugin
         if ($this->plugin_updater instanceof \_YabeKokoro\EDD_SL\PluginUpdater) {
             return $this->plugin_updater;
         }
-        $license = \get_option(KOKORO::WP_OPTION . '_license', ['key' => '', 'opt_in_pre_release' => \false]);
-        $this->plugin_updater = new PluginUpdater(KOKORO::WP_OPTION, ['version' => KOKORO::VERSION, 'license' => $license['key'] ? \trim($license['key']) : \false, 'beta' => $license['opt_in_pre_release'], 'plugin_file' => KOKORO::FILE, 'item_id' => KOKORO::EDD_STORE['item_id'], 'store_url' => KOKORO::EDD_STORE['store_url'], 'author' => KOKORO::EDD_STORE['author']]);
+        $license = \get_option(YABE_KOKORO::WP_OPTION . '_license', ['key' => '', 'opt_in_pre_release' => \false]);
+        $this->plugin_updater = new PluginUpdater(YABE_KOKORO::WP_OPTION, ['version' => YABE_KOKORO::VERSION, 'license' => $license['key'] ? \trim($license['key']) : \false, 'beta' => $license['opt_in_pre_release'], 'plugin_file' => YABE_KOKORO::FILE, 'item_id' => YABE_KOKORO::EDD_STORE['item_id'], 'store_url' => YABE_KOKORO::EDD_STORE['store_url'], 'author' => YABE_KOKORO::EDD_STORE['author']]);
         return $this->plugin_updater;
     }
     /**
@@ -228,17 +228,17 @@ final class Plugin
         if (!\class_exists(PluginUpdater::class)) {
             return;
         }
-        $license_file = \dirname(KOKORO::FILE) . '/license-data.php';
+        $license_file = \dirname(YABE_KOKORO::FILE) . '/license-data.php';
         if (!\file_exists($license_file)) {
             return;
         }
         require_once $license_file;
-        $const_name = 'ROSUA_EMBEDDED_LICENSE_KEY_' . KOKORO::EDD_STORE['item_id'];
+        $const_name = 'ROSUA_EMBEDDED_LICENSE_KEY_' . YABE_KOKORO::EDD_STORE['item_id'];
         if (!\defined($const_name)) {
             return;
         }
         $license_key = \constant($const_name);
-        \update_option(KOKORO::WP_OPTION . '_license', ['key' => $license_key, 'opt_in_pre_release' => \false]);
+        \update_option(YABE_KOKORO::WP_OPTION . '_license', ['key' => $license_key, 'opt_in_pre_release' => \false]);
         \unlink($license_file);
         // activate the license.
         $this->maybe_update_plugin()->activate($license_key);

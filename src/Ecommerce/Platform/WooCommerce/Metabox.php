@@ -11,7 +11,7 @@
 declare (strict_types=1);
 namespace Yabe\Kokoro\Ecommerce\Platform\WooCommerce;
 
-use _YabeKokoro\KOKORO;
+use _YabeKokoro\YABE_KOKORO;
 use WP_Post;
 /**
  * @since 1.0.0
@@ -29,17 +29,17 @@ class Metabox
     }
     public function save_post(int $postId) : void
     {
-        if (!\array_key_exists('post_type', $_POST) || $_POST['post_type'] !== 'product' || !\array_key_exists('kokoro_wpnonce', $_POST) || !\wp_verify_nonce(\sanitize_text_field(\wp_unslash($_POST['kokoro_wpnonce'])), KOKORO::WP_OPTION)) {
+        if (!\array_key_exists('post_type', $_POST) || $_POST['post_type'] !== 'product' || !\array_key_exists('kokoro_wpnonce', $_POST) || !\wp_verify_nonce(\sanitize_text_field(\wp_unslash($_POST['kokoro_wpnonce'])), YABE_KOKORO::WP_OPTION)) {
             return;
         }
         \update_post_meta($postId, 'kokoro_should_generate', (int) \array_key_exists('kokoro_should_generate', $_POST));
         \update_post_meta($postId, 'kokoro_should_renewal', (int) \array_key_exists('kokoro_should_renewal', $_POST));
-        \update_post_meta($postId, 'kokoro_max_sites', (int) isset($_POST['kokoro_max_sites']) && $_POST['kokoro_max_sites'] > 0 ? $_POST['kokoro_max_sites'] : 0);
-        \update_post_meta($postId, 'kokoro_active_duration', (int) isset($_POST['kokoro_active_duration']) && $_POST['kokoro_active_duration'] > 0 ? $_POST['kokoro_active_duration'] : 0);
+        \update_post_meta($postId, 'kokoro_max_sites', (int) isset($_POST['kokoro_max_sites']) && \sanitize_text_field($_POST['kokoro_max_sites']) > 0 ? \sanitize_text_field($_POST['kokoro_max_sites']) : 0);
+        \update_post_meta($postId, 'kokoro_active_duration', (int) isset($_POST['kokoro_active_duration']) && \sanitize_text_field($_POST['kokoro_active_duration']) > 0 ? \sanitize_text_field($_POST['kokoro_active_duration']) : 0);
     }
     private function render_metabox(WP_Post $wpPost) : void
     {
-        $nonce_field = \wp_nonce_field(KOKORO::WP_OPTION, 'kokoro_wpnonce', \false, \false);
+        $nonce_field = \wp_nonce_field(YABE_KOKORO::WP_OPTION, 'kokoro_wpnonce', \false, \false);
         $should_generate = \get_post_meta($wpPost->ID, 'kokoro_should_generate', \true) ? 'checked' : '';
         $should_renewal = \get_post_meta($wpPost->ID, 'kokoro_should_renewal', \true) ? 'checked' : '';
         $max_sites = (int) \get_post_meta($wpPost->ID, 'kokoro_max_sites', \true);
