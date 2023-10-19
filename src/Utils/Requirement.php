@@ -125,6 +125,6 @@ class Requirement
             '<strong>' . $name . '</strong>'
         );
         $requirements = '<ul><li>' . \implode('</li><li>', $this->doesNotMeet) . '</li></ul>';
-        \printf('<div class="notice notice-error"><p>%1$s</p>%2$s</div>', \esc_html__($notice), $requirements);
+        \printf('<div class="notice notice-error"><p>%1$s</p>%2$s</div>', $notice, $requirements);
     }
 }

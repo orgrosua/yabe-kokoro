@@ -86,12 +86,16 @@ class Remote extends AbstractApi implements ApiInterface
             $where_clause[] = $wpdb->prepare("( r.title LIKE %s OR r.remote_url LIKE %s OR r.license_key LIKE %s )", $escaped_search, $escaped_search, $escaped_search);
         }
         $where_clause = $where_clause !== [] ? 'WHERE ' . \implode(' AND ', $where_clause) : '';
-        $result = $wpdb->get_results($wpdb->prepare("\n                SELECT r.*\n                FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_remotes r\n                {$where_clause}\n                LIMIT %d\n                OFFSET %d\n            ", $per_page, $offset));
+        $result = $wpdb->get_results(
+            //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $wpdb->prepare("SELECT r.* FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_remotes r {$where_clause} LIMIT %d OFFSET %d", $per_page, $offset)
+        );
         foreach ($result as $row) {
             $items[] = ['id' => (int) $row->id, 'status' => (bool) $row->status, 'title' => $row->title, 'remote_url' => $row->remote_url, 'license_key' => $row->license_key, 'created_at' => (int) $row->created_at, 'updated_at' => (int) $row->updated_at];
         }
         $total_exists = (int) $wpdb->get_var("\n            SELECT COUNT(*)\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_remotes r\n        ");
-        $total_filtered = (int) $wpdb->get_var("\n            SELECT COUNT(*)\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_remotes r\n            {$where_clause}\n        ");
+        //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $total_filtered = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_remotes r {$where_clause}");
         $total_pages = \ceil($total_filtered / $per_page);
         $from = $items !== [] ? ($page - 1) * $per_page + 1 : null;
         $to = $items !== [] ? $from + \count($items) - 1 : null;

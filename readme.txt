@@ -4,7 +4,7 @@ Donate link: https://ko-fi.com/Q5Q75XSF7
 Tags: oxygen builder, design sets, template
 Requires at least: 6.0
 Tested up to: 6.3
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -56,7 +56,7 @@ Free version **1**.0.5
 Pro version **2**.0.5
 
 
-= 1.0.3 =
+= 1.0.4 =
 * **Improve**: Follow the WordPress guidelines
 
 = 1.0.1 =

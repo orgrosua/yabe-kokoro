@@ -65,7 +65,10 @@ class License extends AbstractApi implements ApiInterface
             $where_clause[] = $wpdb->prepare("( l.title LIKE %s OR l.license_key LIKE %s )", $escaped_search, $escaped_search);
         }
         $where_clause = $where_clause !== [] ? 'WHERE ' . \implode(' AND ', $where_clause) : '';
-        $result = $wpdb->get_results($wpdb->prepare("\n            SELECT \n                l.*,\n                COUNT(s.id) AS sites_count\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l\n                LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s ON s.license_id = l.id\n            {$where_clause}\n            GROUP BY l.id\n            LIMIT %d\n            OFFSET %d\n        ", $per_page, $offset));
+        $result = $wpdb->get_results(
+            //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $wpdb->prepare("SELECT l.*, COUNT(s.id) AS sites_count FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s ON s.license_id = l.id {$where_clause} GROUP BY l.id LIMIT %d OFFSET %d", $per_page, $offset)
+        );
         foreach ($result as $row) {
             $user = null;
             if ($row->user_id) {
@@ -77,7 +80,8 @@ class License extends AbstractApi implements ApiInterface
             $items[] = ['id' => (int) $row->id, 'uid' => $row->uid, 'status' => (bool) $row->status, 'license_key' => $row->license_key, 'title' => $row->title, 'max_sites' => $row->max_sites ? (int) $row->max_sites : null, 'expired_at' => $row->expired_at ? (int) $row->expired_at : null, 'created_at' => (int) $row->created_at, 'updated_at' => (int) $row->updated_at, 'sites_count' => (int) $row->sites_count, 'user' => $user];
         }
         $total_exists = (int) $wpdb->get_var("\n            SELECT COUNT(*)\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l\n        ");
-        $total_filtered = (int) $wpdb->get_var("\n            SELECT COUNT(*)\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l\n            {$where_clause}\n        ");
+        //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $total_filtered = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l {$where_clause}");
         $total_pages = \ceil($total_filtered / $per_page);
         $from = $items !== [] ? ($page - 1) * $per_page + 1 : null;
         $to = $items !== [] ? $from + \count($items) - 1 : null;
@@ -198,13 +202,17 @@ class License extends AbstractApi implements ApiInterface
             $where_clause[] = $wpdb->prepare("( s.site_url LIKE %s )", $escaped_search);
         }
         $where_clause = $where_clause !== [] ? 'WHERE ' . \implode(' AND ', $where_clause) : '';
-        $result = $wpdb->get_results($wpdb->prepare("\n                SELECT s.*\n                FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s\n                    LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l ON l.id = s.license_id\n                {$where_clause}\n                GROUP BY s.id\n                LIMIT %d\n                OFFSET %d\n            ", $per_page, $offset));
+        $result = $wpdb->get_results(
+            //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+            $wpdb->prepare(" SELECT s.* FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s LEFT JOIN {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_licenses l ON l.id = s.license_id {$where_clause} GROUP BY s.id LIMIT %d OFFSET %d", $per_page, $offset)
+        );
         $items = [];
         foreach ($result as $row) {
             $items[] = ['id' => (int) $row->id, 'status' => (bool) $row->status, 'license_id' => (int) $row->license_id, 'site_url' => $row->site_url, 'created_at' => $row->created_at];
         }
         $total_exists = (int) $wpdb->get_var("\n            SELECT COUNT(*)\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s\n        ");
-        $total_filtered = (int) $wpdb->get_var("\n            SELECT COUNT(*)\n            FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s\n            {$where_clause}\n        ");
+        //phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $total_filtered = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}{$wpdb->yabe_kokoro_prefix}_sites s {$where_clause}");
         $total_pages = \ceil($total_filtered / $per_page);
         $from = $items !== [] ? ($page - 1) * $per_page + 1 : null;
         $to = $items !== [] ? $from + \count($items) - 1 : null;
