@@ -14,7 +14,6 @@ namespace Yabe\Kokoro\Utils;
 use _YabeKokoro\YABE_KOKORO;
 /**
  * Check plugin requirements.
- * TODO: Adopt from Yabe\Bricks\Utils\Requirement
  *
  * @since 1.0.0
  */
@@ -115,14 +114,13 @@ class Requirement
     }
     public function printNotice()
     {
-        $name = \esc_html(\get_plugin_data(YABE_KOKORO::FILE, \false)['Name']);
         if (!\current_user_can('activate_plugins')) {
             return;
         }
         $notice = \sprintf(
             /* translators: 1: plugin name, 2: list of requirements */
-            \esc_html__('The %1$s plugin minimum requirements are not met:', 'yabe-kokoro'),
-            '<strong>' . $name . '</strong>'
+            \esc_html__('The <strong>%1$s</strong> plugin minimum requirements are not met:', 'yabe-kokoro'),
+            \esc_html(\get_plugin_data(YABE_KOKORO::FILE, \false)['Name'])
         );
         $requirements = '<ul><li>' . \implode('</li><li>', $this->doesNotMeet) . '</li></ul>';
         \printf('<div class="notice notice-error"><p>%1$s</p>%2$s</div>', $notice, \wp_kses_post($requirements));

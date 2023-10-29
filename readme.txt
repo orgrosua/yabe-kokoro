@@ -4,7 +4,7 @@ Donate link: https://ko-fi.com/Q5Q75XSF7
 Tags: oxygen builder, design sets, template
 Requires at least: 6.0
 Tested up to: 6.3
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 Requires PHP: 7.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -55,6 +55,9 @@ For instance:
 Free version **1**.0.5
 Pro version **2**.0.5
 
+
+= 1.0.6 =
+* **New**: Yabe Kokoro Lite is now available on [WordPress.org](https://wordpress.org/plugins/yabe-kokoro/)
 
 = 1.0.5 =
 * **Improve**: Follow the WordPress guidelines

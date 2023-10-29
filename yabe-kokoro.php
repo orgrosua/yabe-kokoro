@@ -7,7 +7,7 @@
  * Plugin Name:         Yabe Kokoro
  * Plugin URI:          https://kokoro.yabe.land
  * Description:         Oxygen design sets manager
- * Version:             1.0.5
+ * Version:             1.0.6
  * Requires at least:   6.0
  * Requires PHP:        7.4
  * Author:              Rosua
