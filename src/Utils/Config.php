@@ -12,11 +12,11 @@ declare (strict_types=1);
 namespace Yabe\Kokoro\Utils;
 
 use Exception;
-use _YabeKokoro\YABE_KOKORO;
 use _YabeKokoro\Symfony\Component\PropertyAccess\Exception\AccessException;
 use _YabeKokoro\Symfony\Component\PropertyAccess\Exception\InvalidArgumentException;
 use _YabeKokoro\Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use _YabeKokoro\Symfony\Component\PropertyAccess\PropertyAccess;
+use _YabeKokoro\YABE_KOKORO;
 /**
  * Accessor for the plugin config.
  *

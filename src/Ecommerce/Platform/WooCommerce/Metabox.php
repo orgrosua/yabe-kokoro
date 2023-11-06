@@ -11,8 +11,8 @@
 declare (strict_types=1);
 namespace Yabe\Kokoro\Ecommerce\Platform\WooCommerce;
 
-use _YabeKokoro\YABE_KOKORO;
 use WP_Post;
+use _YabeKokoro\YABE_KOKORO;
 /**
  * @since 1.0.0
  */
@@ -48,13 +48,13 @@ class Metabox
         
             <div class="kokoro-container">
                 <?php 
-        $nonce_field;
+        echo $nonce_field;
         ?>
                 <div>
                     <p><strong>Generate?</strong></p>
                     <label for="kokoro_should_generate">
                         <input type="checkbox" name="kokoro_should_generate" id="kokoro_should_generate" <?php 
-        $should_generate;
+        echo $should_generate;
         ?>>
                         Generate the license automatically
                     </label>
@@ -64,7 +64,7 @@ class Metabox
                     <p><strong>Renewal?</strong></p>
                     <label for="kokoro_should_renewal">
                         <input type="checkbox" name="kokoro_should_renewal" id="kokoro_should_renewal" <?php 
-        $should_renewal;
+        echo $should_renewal;
         ?>>
                         Allow license renewal
                         <span class="dashicons dashicons-editor-help" title="Extend the expiry date for the existing license for the renewal order."></span>
@@ -77,7 +77,7 @@ class Metabox
                         <span class="dashicons dashicons-editor-help" title="Keep empty or 0 to allow unlimited activations."></span>
                     </p>
                     <input type="number" name="kokoro_max_sites" id="kokoro_max_sites" value="<?php 
-        $max_sites;
+        echo $max_sites;
         ?>" min="0">
                 </div>
 
@@ -88,7 +88,7 @@ class Metabox
                     </p>
                     <div>
                         <input type="number" name="kokoro_active_duration" id="kokoro_active_duration" value="<?php 
-        $active_duration;
+        echo $active_duration;
         ?>" min="0">
                          days
                     </div>

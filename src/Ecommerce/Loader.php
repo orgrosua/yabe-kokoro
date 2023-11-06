@@ -12,9 +12,9 @@ declare (strict_types=1);
 namespace Yabe\Kokoro\Ecommerce;
 
 use Exception;
-use _YabeKokoro\YABE_KOKORO;
 use ReflectionClass;
 use _YabeKokoro\Symfony\Component\Finder\Finder;
+use _YabeKokoro\YABE_KOKORO;
 class Loader
 {
     /**

@@ -11,13 +11,13 @@
 declare (strict_types=1);
 namespace Yabe\Kokoro\Api\Admin;
 
-use _YabeKokoro\YABE_KOKORO;
 use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 use Yabe\Kokoro\Api\AbstractApi;
 use Yabe\Kokoro\Api\ApiInterface;
 use Yabe\Kokoro\Plugin;
+use _YabeKokoro\YABE_KOKORO;
 /**
  * @since 1.0.0
  */

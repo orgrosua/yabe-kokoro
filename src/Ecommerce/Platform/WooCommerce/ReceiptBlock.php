@@ -99,7 +99,7 @@ class ReceiptBlock
                     </tr>
                 </thead>
                 <?php 
-        $table_body;
+        echo $table_body;
         ?>
             </table>
         

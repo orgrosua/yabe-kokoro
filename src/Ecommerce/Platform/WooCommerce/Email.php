@@ -72,7 +72,7 @@ class Email
                             <h2 style="color: #7f54b3; display: block; font-size: 18px; font-weight: bold; line-height: 130%; margin: 0 0 18px; text-align: left;">Yabe Kokoro License</h2>
                             <div style="padding: 12px; color: #636363; border: 1px solid #e5e5e5;" >
                                 <?php 
-        $table_body;
+        echo $table_body;
         ?>
                             </div>
                         </td>

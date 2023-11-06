@@ -11,8 +11,8 @@
 declare (strict_types=1);
 namespace Yabe\Kokoro;
 
-use _YabeKokoro\YABE_KOKORO;
 use _YabeKokoro\Rosua\Migrations\Migrator;
+use _YabeKokoro\YABE_KOKORO;
 /**
  * Manage the plugin custom database tables.
  *

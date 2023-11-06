@@ -13,7 +13,6 @@ namespace Yabe\Kokoro;
 
 use _YabeKokoro\EDD_SL\PluginUpdater;
 use Exception;
-use _YabeKokoro\YABE_KOKORO;
 use WP_Upgrader;
 use wpdb;
 use Yabe\Kokoro\Admin\AdminPage;
@@ -23,6 +22,7 @@ use Yabe\Kokoro\Ecommerce\Loader as PlatformLoader;
 use Yabe\Kokoro\Utils\Common;
 use Yabe\Kokoro\Utils\Debug;
 use Yabe\Kokoro\Utils\Notice;
+use _YabeKokoro\YABE_KOKORO;
 /**
  * Manage the plugin lifecycle and provides a single point of entry to the plugin.
  *
@@ -130,6 +130,24 @@ final class Plugin
         \do_action('a!yabe/kokoro/plugin:boot_migration.end');
     }
     /**
+     * Initialize the plugin updater.
+     * Pro version only.
+     *
+     * @return PluginUpdater
+     */
+    public function maybe_update_plugin()
+    {
+        if (!\class_exists(PluginUpdater::class)) {
+            return null;
+        }
+        if ($this->plugin_updater instanceof \_YabeKokoro\EDD_SL\PluginUpdater) {
+            return $this->plugin_updater;
+        }
+        $license = \get_option(YABE_KOKORO::WP_OPTION . '_license', ['key' => '', 'opt_in_pre_release' => \false]);
+        $this->plugin_updater = new PluginUpdater(YABE_KOKORO::WP_OPTION, ['version' => YABE_KOKORO::VERSION, 'license' => $license['key'] ? \trim($license['key']) : \false, 'beta' => $license['opt_in_pre_release'], 'plugin_file' => YABE_KOKORO::FILE, 'item_id' => YABE_KOKORO::EDD_STORE['item_id'], 'store_url' => YABE_KOKORO::EDD_STORE['store_url'], 'author' => YABE_KOKORO::EDD_STORE['author']]);
+        return $this->plugin_updater;
+    }
+    /**
      * Handle the plugin's activation by (maybe) running database migrations
      * and initializing the plugin configuration.
      */
@@ -200,24 +218,6 @@ final class Plugin
             \array_unshift($links, \sprintf('<a href="%s" style="color:#067b34;font-weight:600;" target="_blank">%s</a>', \esc_url(Common::plugin_data('PluginURI') . '?utm_source=WordPress&utm_campaign=liteplugin&utm_medium=plugin-action-links&utm_content=Upgrade#pricing'), \esc_html__('Upgrade to Pro', 'yabe-kokoro')));
         }
         return $links;
-    }
-    /**
-     * Initialize the plugin updater.
-     * Pro version only.
-     *
-     * @return PluginUpdater
-     */
-    public function maybe_update_plugin()
-    {
-        if (!\class_exists(PluginUpdater::class)) {
-            return null;
-        }
-        if ($this->plugin_updater instanceof \_YabeKokoro\EDD_SL\PluginUpdater) {
-            return $this->plugin_updater;
-        }
-        $license = \get_option(YABE_KOKORO::WP_OPTION . '_license', ['key' => '', 'opt_in_pre_release' => \false]);
-        $this->plugin_updater = new PluginUpdater(YABE_KOKORO::WP_OPTION, ['version' => YABE_KOKORO::VERSION, 'license' => $license['key'] ? \trim($license['key']) : \false, 'beta' => $license['opt_in_pre_release'], 'plugin_file' => YABE_KOKORO::FILE, 'item_id' => YABE_KOKORO::EDD_STORE['item_id'], 'store_url' => YABE_KOKORO::EDD_STORE['store_url'], 'author' => YABE_KOKORO::EDD_STORE['author']]);
-        return $this->plugin_updater;
     }
     /**
      * Check if the plugin distributed with an embedded license and activate the license.

@@ -12,9 +12,9 @@ declare (strict_types=1);
 namespace Yabe\Kokoro\Admin;
 
 use _YabeKokoro\EDD_SL\PluginUpdater;
-use _YabeKokoro\YABE_KOKORO;
 use Yabe\Kokoro\Ecommerce\Loader as PlatformLoader;
 use Yabe\Kokoro\Utils\Asset;
+use _YabeKokoro\YABE_KOKORO;
 class AdminPage
 {
     public function __construct()
